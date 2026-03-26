@@ -1,7 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Pra Você 💙</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+    transition: background 1s ease-in-out;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(white 1px, transparent 1px);
+    background-size: 3px 3px;
+    opacity: 0.3;
+    animation: estrelas 20s linear infinite;
+  }
+
+  @keyframes estrelas {
+    from { transform: translateY(0); }
+    to { transform: translateY(-200px); }
+  }
+
+  body::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 80, 0.7);
+  }
+
+  .container {
+    position: relative;
+    background: rgba(0,0,0,0.6);
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 420px;
+    z-index: 1;
+    backdrop-filter: blur(6px);
+  }
+
+  #texto {
+    white-space: pre-line;
+    line-height: 1.6;
+    display: inline-block;
+    border: none;   /* tirou barra */
+    animation: none; /* tirou animação */
+    padding-right: 0;
+    margin-bottom: 10px;
+  }
+
+  button {
+    margin-top: 15px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    background: #3aa0ff;
+    color: white;
+    cursor: pointer;
+  }
+
+  .player {
+    margin-top: 20px;
+    background: #121212;
+    border-radius: 15px;
+    padding: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .capa, #perfect {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+
+  .girando {
+    animation: girar 6s linear infinite;
+  }
+
+  @keyframes girar {
+    from { transform: rotate(0deg) scale(1.05); }
+    to { transform: rotate(360deg) scale(1.05); }
+  }
+
+  .info {
+    flex: 1;
+    text-align: left;
+  }
+
+  .titulo {
+    font-weight: bold;
+  }
+
+  .artista {
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  #btnPlay {
+    font-size: 22px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+
+  input[type=range] {
+    width: 100%;
+  }
+
+  #tempo {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 3px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <p id="texto"></p>
+
+  <button onclick="proximo()">Próximo 💙</button>
+
+  <div class="player">
+    <img src="perfect.jpg" class="capa" id="capa">
+
+    <div class="info">
+      <div class="titulo">Perfect</div>
+      <div class="artista">Ed Sheeran</div>
+
+      <input type="range" id="barra" value="0">
+      <div id="tempo">0:00 / 0:00</div>
+
+      <div id="btnPlay" onclick="toggleMusica()">▶️</div>
+    </div>
+  </div>
+
+</div>
+
+<audio id="audio">
+  <source src="perfect.mp3" type="audio/mpeg">
+</audio>
+
 <script>
   let etapa = 0;
   let tocando = false;
 
+  // SEUS TEXTOS ORIGINAIS
   const textos = [
     "Bom fiz isso aqui pra ser um pedido de desculpas, bom eu sei que sou uma pessoa bem da chata, bem dificil lidar e não sei como até hoje você falou comigo. Ja de antemão irei confessar a você que eu tenho que me deixar ser menos controlado por impulsos de falar o que me vem a mente",
     "Agrdeço real pela sua paciência, provavelmente esse site já será entregue depois da gente ter conversado, olha pode parecer bem clichê, mas você faz eu querer ser uma pessoa melhor, e isso é admiravel eu ando refletindo muito das minhas atitudes, não porque quero deixar de ser quem sou, mas por você valer a pena eu ser uma pessoa melhor, na real nunca me imaginei fazendo isso pra alguêm porém ao estar fazendo isso eu vi o quanto me senti feliz de fazer algo pra você, espero que você tenha gostado, porque eu gostei de ter usado meu tempo para não sei como tentar deixar seu dia alegre :)",
@@ -18,10 +181,9 @@
     "foto5.jpg"
   ];
 
-  // --- AQUI É ONDE TROCAMOS O TEXTO ---
   function proximo() {
     etapa = (etapa + 1) % textos.length;
-    document.getElementById("texto").innerText = textos[etapa]; // mostra direto, sem digitar
+    document.getElementById("texto").innerText = textos[etapa];
     document.body.style.backgroundImage = `url('${fundos[etapa]}')`;
   }
 
@@ -29,7 +191,7 @@
   const barra = document.getElementById("barra");
   const tempo = document.getElementById("tempo");
   const btn = document.getElementById("btnPlay");
-  const capa = document.getElementById("perfect");
+  const capa = document.getElementById("capa");
 
   function toggleMusica() {
     if (!tocando) {
@@ -71,7 +233,10 @@
     tocando = false;
   });
 
-  // Exibe o primeiro texto direto
+  // iniciar com o primeiro texto e fundo
   document.getElementById("texto").innerText = textos[0];
   document.body.style.backgroundImage = `url('${fundos[0]}')`;
 </script>
+
+</body>
+</html>
