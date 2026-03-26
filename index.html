@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Pra Você 💙</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+    transition: background 1s ease-in-out;
+    overflow: hidden;
+  }
+
+  /* ESTRELAS */
+  body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(white 1px, transparent 1px);
+    background-size: 3px 3px;
+    opacity: 0.3;
+    animation: estrelas 20s linear infinite;
+  }
+
+  @keyframes estrelas {
+    from { transform: translateY(0); }
+    to { transform: translateY(-200px); }
+  }
+
+  /* OVERLAY */
+  body::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 80, 0.7);
+  }
+
+  .container {
+    position: relative;
+    background: rgba(0,0,0,0.6);
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 420px;
+    z-index: 1;
+    backdrop-filter: blur(6px);
+  }
+
+  #texto {
+    white-space: pre-line;
+    line-height: 1.6;
+    border-right: 2px solid white;
+    display: inline-block;
+    padding-right: 5px;
+    animation: piscar 1s infinite;
+  }
+
+  @keyframes piscar {
+    0%,100% { border-color: white; }
+    50% { border-color: transparent; }
+  }
+
+  button {
+    margin-top: 15px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    background: #3aa0ff;
+    color: white;
+    cursor: pointer;
+  }
+
+  /* PLAYER */
+  .player {
+    margin-top: 20px;
+    background: #121212;
+    border-radius: 15px;
+    padding: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .capa {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    transition: transform 0.3s;
+  }
+
+  /* animação quando toca */
+  .girando {
+    animation: girar 6s linear infinite;
+  }
+
+  @keyframes girar {
+    from { transform: rotate(0deg) scale(1.05); }
+    to { transform: rotate(360deg) scale(1.05); }
+  }
+
+  .info {
+    flex: 1;
+    text-align: left;
+  }
+
+  .titulo {
+    font-weight: bold;
+  }
+
+  .artista {
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  #btnPlay {
+    font-size: 22px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+
+  input[type=range] {
+    width: 100%;
+  }
+
+  #tempo {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 3px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <p id="texto"></p>
+
+  <button onclick="proximo()">Próximo 💙</button>
+
+  <!-- PLAYER -->
+  <div class="player">
+    <img src="capa.jpg" class="capa" id="capa">
+
+    <div class="info">
+      <div class="titulo">Anchor</div>
+      <div class="artista">Novo Amor</div>
+
+      <input type="range" id="barra" value="0">
+      <div id="tempo">0:00 / 0:00</div>
+
+      <div id="btnPlay" onclick="toggleMusica()">▶️</div>
+    </div>
+  </div>
+
+</div>
+
+<audio id="audio">
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  let etapa = 0;
+  let tocando = false;
+
+  const textos = [
+    "Bom fiz isso aqui pra ser um pedido de desculpas, bom eu sei que sou uma pessoa bem da chata, bem dificil lidar e não sei como até hoje você falou comigo. Ja de antemão irei confessar a você que eu tenho que me deixar ser menos controlado por impulsos de falar o que me vem a mente",
+    "Agrdeço real pela sua paciência, provavelmente esse site já será entregue depois da gente ter conversado, olha pode parecer bem clichê, mas você faz eu querer ser uma pessoa melhor, e isso é admiravel eu ando refletindo muito das minhas atitudes, não porque quero deixar de ser quem sou, mas por você valer a pena eu ser uma pessoa melhor, na real nunca me imaginei fazendo isso pra alguêm porém ao estar fazendo isso eu vi o quanto me senti feliz de fazer algo pra você, espero que você tenha gostado, porque eu gostei de ter usado meu tempo para não sei como tentar deixar seu dia alegre :)",
+    "Bom, com alguns acontecimentos fiquei bem pensativo e resolvi fazer isso aqui pra dizer o quanto me importo com você, bom eu te chateei e era pra eu ter mandado flores mas queria fazer algo diferente, saiba que me importo muito com você e agradeço a Deus por sua amizade.",
+    "Bom do mais isso aqui é mais pra mostrar uma pequena da pequena % que cê merece, me desculpa novamente se por eu ser uma pessoa bem da chata kkkkk",
+    "(Bom aproveitei pra treinar um pouco web desenvolvimento não vou mentir😁)"];
+
+  const fundos = [
+    "foto1.jpg",
+    "foto2.jpg",
+    "foto3.jpg",
+    "foto4.jpg",
+    "foto5.jpg"
+  ];
+
+  function escreverTexto(texto) {
+    const el = document.getElementById("texto");
+    el.innerHTML = "";
+    let i = 0;
+
+    function digitar() {
+      if (i < texto.length) {
+        el.innerHTML += texto[i] === "\n" ? "<br>" : texto[i];
+        i++;
+        setTimeout(digitar, 30);
+      }
+    }
+
+    digitar();
+  }
+
+  function proximo() {
+    etapa = (etapa + 1) % textos.length;
+    escreverTexto(textos[etapa]);
+    document.body.style.backgroundImage = `url('${fundos[etapa]}')`;
+  }
+
+  const audio = document.getElementById("audio");
+  const barra = document.getElementById("barra");
+  const tempo = document.getElementById("tempo");
+  const btn = document.getElementById("btnPlay");
+  const capa = document.getElementById("capa");
+
+  function toggleMusica() {
+    if (!tocando) {
+      audio.play();
+      tocando = true;
+      btn.innerText = "⏸️";
+      capa.classList.add("girando");
+    } else {
+      audio.pause();
+      tocando = false;
+      btn.innerText = "▶️";
+      capa.classList.remove("girando");
+    }
+  }
+
+  function formatarTempo(s) {
+    let m = Math.floor(s / 60);
+    let sec = Math.floor(s % 60);
+    if (sec < 10) sec = "0" + sec;
+    return m + ":" + sec;
+  }
+
+  audio.addEventListener("loadedmetadata", () => {
+    tempo.innerText = "0:00 / " + formatarTempo(audio.duration);
+  });
+
+  audio.addEventListener("timeupdate", () => {
+    barra.value = (audio.currentTime / audio.duration) * 100 || 0;
+    tempo.innerText = formatarTempo(audio.currentTime) + " / " + formatarTempo(audio.duration);
+  });
+
+  barra.addEventListener("input", () => {
+    audio.currentTime = (barra.value / 100) * audio.duration;
+  });
+
+  audio.addEventListener("ended", () => {
+    btn.innerText = "▶️";
+    capa.classList.remove("girando");
+    tocando = false;
+  });
+
+  escreverTexto(textos[0]);
+  document.body.style.backgroundImage = `url('${fundos[0]}')`;
+</script>
+
+</body>
+</html>
